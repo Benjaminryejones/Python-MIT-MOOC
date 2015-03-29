@@ -109,17 +109,6 @@ def bisectionalSearch(balance, interestRate, lower, upper, tolerance):
 			print "Monthly payment amount to pay off debt in one year: %.2f" % guess
 			break
 
-
-
-
-
-
-
-
-
-
-
 creditCardQuestion1()
 creditCardQuestion2()
 creditCardQuestion3()
-
