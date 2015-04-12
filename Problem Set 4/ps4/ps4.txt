@@ -1,0 +1,10 @@
+Psuedocode:
+
+find_best_shift function:
+real words found = 0
+best shift = 0
+loop through all possible shifts of 0 to 27
+shift all the characters
+split up the text
+count how many real words there are
+set the best shift to the result with the most real words
