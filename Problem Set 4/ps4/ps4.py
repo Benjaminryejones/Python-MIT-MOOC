@@ -314,7 +314,7 @@ def find_best_shift(wordlist, text):
         temp_words_found = 0
         test_words = apply_shift(text, shift)
         test_words_split = string.split(test_words, ' ')
-        print test_words_split
+
         for word in test_words_split:
             if is_word(wordlist, word) == True:
                 temp_words_found += 1
@@ -390,15 +390,6 @@ def find_best_shifts(wordlist, text):
     >>> print apply_shifts(s, shifts)
     Do Androids Dream of Electric Sheep?
     """
-    words_found = 0
-    best_shifts = (,)
-
-    words_split = string.split(text, ' ')
-    for word in words_split:
-        for i in range(0, len(word) + 1):
-            best_shifts_test = (,)
-            shifts_test = temp_find_best_shifts(wordlist, word, i)
-            if
 
 
 def find_best_shifts_rec(wordlist, text, start):
@@ -416,43 +407,49 @@ def find_best_shifts_rec(wordlist, text, start):
     returns: list of tuples.  each tuple is (position in text, amount of shift)
     """
     ### TODO.
-    words_found = 0
-    best_shifts = (,)
+    # The list of tuples representing shifts
+    shifts = []
 
-    words_split = string.split(text, ' ')
-    # Try out each word one at a time
-    for word in words_split:
-        # Try out different starting locations
-        for i in range(0, len(word) + 1):
-            words_found_shifts = 0
-            best_shifts = (,)
-            best_shifts_test = find_best_shift(wordlist, word[i:])
-            # Test how many valid words come up per start location
+    for shift in range(0,28):
 
+        s = text[:start] + apply_shift(text[start:], shift)
 
-                words_found = 0
-                best_shift = 0
-                for shift in range(0,28):
-                    temp_words_found = 0
-                    test_words = apply_shift(text, shift)
-                    test_words_split = string.split(test_words, ' ')
-                    print test_words_split
-                    for word in test_words_split:
-                        if is_word(wordlist, word) == True:
-                            temp_words_found += 1
-                        else:
-                            pass
-                    if temp_words_found > words_found:
-                        words_found = temp_words_found
-                        best_shift = shift
-                    else:
-                        pass
+        char_position = start
+        # Loop through characters looking for a space
+        for char in s[start:]:
+            if char == ' ' and is_word(wordlist, s[start:char_position]):
+                start = char_position + 1
+                # Recursively loop through, starting where the space was found
+                recursive = find_best_shifts_rec(wordlist, text, start)
+            char_position += 1
 
-    return (start, best_shift)
+        # Valid word found, add it to the list of tuples
+        if is_word(wordlist, s[start:len(s)]) == True:
+            shifts += [(start, shift)]
+            return shifts
+
+        # No valid word yet found, continue looping through possible shifts
+        elif is_word(wordlist, s[start:len(s)]) == False:
+            pass
+
+        # No combination of shifts and positions produced a valid word
+        else:
+            return None
+
+    return shifts
+
+##### Function Test #####
+# s = random_scrambled(wordlist, 3)
+# print s
+# shifts = find_best_shifts_rec(wordlist, s, 0)
+# print shifts
+# apply_shifts(s, shifts)
+# print s
+
 
 
 def decrypt_fable():
-     """
+    """
     Using the methods you created in this problem set,
     decrypt the fable given by the function get_fable_string().
     Once you decrypt the message, be sure to include as a comment
@@ -463,7 +460,14 @@ def decrypt_fable():
     """
     ### TODO.
 
+    fable = get_fable_string()
+    fable_decoded = find_best_shifts_rec(wordlist, fable, 0)
+    print fable_decoded
+    fable_decoded = apply_shift(fable, fable_decoded)
 
+    print fable_decoded
+
+decrypt_fable()
 
 
 #What is the moral of the story?
